@@ -1,5 +1,5 @@
 # try-s2s-vuex-201801
-try s2s at vuex in 2018/01
+try [s2s](https://github.com/akameco/s2s) at vuex in 2018/01
 
 # What is this?
 
