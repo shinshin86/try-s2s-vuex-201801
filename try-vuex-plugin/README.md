@@ -4,13 +4,5 @@
 
 ## How to compile plugin
 
-### Install
-
-`` yarn add --dev babel-core babel-core babel-preset-env``
-
-
-
-#### Compile
-
-``node_modules/.bin/babel src/babel-plugin.js --out-file lib/babel-plugin-compiled.js``
+Wrote at [README](https://github.com/shinshin86/try-s2s-vuex-201801/blob/master/README.md).
 

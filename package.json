@@ -3,9 +3,13 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "s2s": "s2s"
+    "s2s": "s2s",
+    "build": "babel try-vuex-plugin/src/babel-plugin.js --out-file try-vuex-plugin/lib/babel-plugin-compiled.js"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
     "s2s": "^0.15.0"
   }
 }
