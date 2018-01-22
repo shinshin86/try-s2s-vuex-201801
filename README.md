@@ -25,5 +25,15 @@ atom .
 
 # Start s2s
 yarn run s2s
-
 ```
+
+
+
+# How to plugin build
+
+Build "try-vuex-plugin" at this command.
+
+```bash
+yarn run build
+```
+
