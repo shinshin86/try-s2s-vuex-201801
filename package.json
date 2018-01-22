@@ -1,0 +1,11 @@
+{
+  "name": "try-s2s-vuex-201801",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "s2s": "s2s"
+  },
+  "devDependencies": {
+    "s2s": "^0.15.0"
+  }
+}
