@@ -89,9 +89,12 @@ exports.default = function () {
   return {
     visitor: {
       ImportDeclaration: function ImportDeclaration(path) {
-        if (path.container.length === 6) {
-          path.container.length = 1;
-        }
+        // TODO: 制御について改善が必要
+        // 保存時にコードの初期化が行われてしまうため、使用しない
+        // if(path.container.length === 6) {
+        //  path.container.length = 1
+        // }
+
         if (path.container.length !== 6) {
           // action定義数
           var actionsCount = path.node.specifiers.length;
