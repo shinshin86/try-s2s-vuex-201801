@@ -94,6 +94,9 @@ export default () => {
   return {
     visitor: {
       ImportDeclaration: path => {
+        if(path.container.length === 6) {
+          path.container.length = 1
+        }
         if(path.container.length !== 6) {
           // action定義数
           const actionsCount = path.node.specifiers.length;
