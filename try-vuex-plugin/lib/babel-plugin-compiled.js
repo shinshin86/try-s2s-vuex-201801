@@ -89,37 +89,42 @@ exports.default = function () {
   return {
     visitor: {
       ImportDeclaration: function ImportDeclaration(path) {
-        // action定義数
-        var actionsCount = path.node.specifiers.length;
+        if (path.container.length !== 6) {
+          // action定義数
+          var actionsCount = path.node.specifiers.length;
 
-        // 書き込み先のファイル名("src/store/mutation-types.js")を取得
-        var filepath = (0, _path.join)(__dirname, storeDir, path.node.source.value + ".js");
+          // 書き込み先のファイル名("src/store/mutation-types.js")を取得
+          var filepath = (0, _path.join)(__dirname, storeDir, path.node.source.value + ".js");
 
-        // mutationTypes内のコードを保持
-        var mutationTypesCode = [];
+          // mutationTypes内のコードを保持
+          var mutationTypesCode = [];
 
-        // new Vuexの生成
-        path.insertAfter(newVuexBuilder());
+          // new Vuexの生成
+          path.insertAfter(newVuexBuilder());
 
-        // vuexのテンプレートを記述
-        path.insertAfter(gettersInitilize());
-        path.insertAfter(mutationsInitilize(actionsCount));
-        path.insertAfter(actionsInitilize(actionsCount));
-        path.insertAfter(stateInitilize());
+          // vuexのテンプレートを記述
+          path.insertAfter(gettersInitilize());
+          path.insertAfter(mutationsInitilize(actionsCount));
+          path.insertAfter(actionsInitilize(actionsCount));
+          path.insertAfter(stateInitilize());
 
-        path.node.specifiers.forEach(function (n) {
-          importNameList.push(n.imported.name);
-          var buildAst = mutationTypesBuilder({
-            ACTION_NAME: t.identifier(n.imported.name),
-            ACTION_STR: t.StringLiteral(n.imported.name)
+          // importリストを初期化
+          importNameList.length = 0;
+
+          path.node.specifiers.forEach(function (n) {
+            importNameList.push(n.imported.name);
+            var buildAst = mutationTypesBuilder({
+              ACTION_NAME: t.identifier(n.imported.name),
+              ACTION_STR: t.StringLiteral(n.imported.name)
+            });
+
+            // mutationTypes.js用のコードを追加していく
+            mutationTypesCode.push((0, _babelGenerator2.default)(buildAst).code);
           });
 
-          // mutationTypes.js用のコードを追加していく
-          mutationTypesCode.push((0, _babelGenerator2.default)(buildAst).code);
-        });
-
-        // "mutation-types.js"に書き込み
-        (0, _fs.writeFileSync)(filepath, mutationTypesCode.join("\n"));
+          // "mutation-types.js"に書き込み
+          (0, _fs.writeFileSync)(filepath, mutationTypesCode.join("\n"));
+        }
       },
 
       // 書き出したactions, mutationsの内容を、定義したactionに書き換えていく
