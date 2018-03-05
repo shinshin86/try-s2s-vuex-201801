@@ -10,6 +10,9 @@ let importNameList = []
 // 対象ディレクトリ
 const storeDir = join("..", "..", "src", "store")
 
+// 対象テストディレクトリ
+const storeSpecDir = join("..", "..", "test")
+
 // 生成用テンプレート
 const builder = (code) => {
   return template(code, { sourceType: 'module' });
@@ -68,6 +71,71 @@ const actionsInitilize = (actionsCount) => {
   const b = builder(buildCode)
   return b()
 }
+
+const specImportBuilder = (actionNames) => {
+  let codes = []
+  const beforeCode = "import {"
+  const afterCode = "} from '../src/store/mutation-types'"
+
+  actionNames.forEach(v => {
+    codes.push(v)
+  })
+
+  const buildCode = beforeCode
+                  + codes.join(',')
+                  + afterCode
+
+  const b = builder(buildCode)
+
+  return generate(b()).code
+}
+
+const specInitilize = (actionNames) => {
+  let generateCode = []
+  const names = getNames(actionNames)
+
+  generateCode.push(specImportBuilder(names))
+
+  const methods = ["actions", "mutations", "getters"]
+  methods.forEach((method) => {
+    generateCode.push(generateSpecCode(method, names))
+  })
+  return generateCode
+}
+
+const generateSpecCode = (method, names) => {
+  const beforeCode = `
+    describe(${method}, () => {
+    `
+  const afterCode = `
+    })
+    `
+  let codes = []
+  if (method !== "getters") {
+    names.forEach(v => {
+      codes.push(`
+        it('${v}', () => {
+        })
+        `
+        )
+    })
+  }
+
+  const buildCode = beforeCode
+                  + codes.join('')
+                  + afterCode
+  const b = builder(buildCode)
+  return generate(b()).code
+}
+
+const getNames = actionNames => {
+  let names = []
+  actionNames.forEach((action, idx) => {
+    names.push(actionNames[idx].imported.name)
+  })
+  return names
+}
+    
 
 const mutationsInitilize = (actionsCount) => {
   let codes = []
@@ -135,6 +203,12 @@ export default () => {
 
           // "mutation-types.js"に書き込み
           writeFileSync(filepath, mutationTypesCode.join("\n"))
+
+          // 書き込み先のファイル名("test/index.spec.js")
+          const specPath = join(__dirname, storeSpecDir, "index.spec.js")
+
+          // テスト生成
+          writeFileSync(specPath, specInitilize(path.node.specifiers).join('\n'))
         }
       },
 
@@ -161,4 +235,3 @@ export default () => {
     }
   }
 }
-

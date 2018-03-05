@@ -30,6 +30,9 @@ var importNameList = [];
 // 対象ディレクトリ
 var storeDir = (0, _path.join)("..", "..", "src", "store");
 
+// 対象テストディレクトリ
+var storeSpecDir = (0, _path.join)("..", "..", "test");
+
 // 生成用テンプレート
 var builder = function builder(code) {
   return (0, _babelTemplate2.default)(code, { sourceType: 'module' });
@@ -68,6 +71,58 @@ var actionsInitilize = function actionsInitilize(actionsCount) {
 
   var b = builder(buildCode);
   return b();
+};
+
+var specImportBuilder = function specImportBuilder(actionNames) {
+  var codes = [];
+  var beforeCode = "import {";
+  var afterCode = "} from '../src/store/mutation-types'";
+
+  actionNames.forEach(function (v) {
+    codes.push(v);
+  });
+
+  var buildCode = beforeCode + codes.join(',') + afterCode;
+
+  var b = builder(buildCode);
+
+  return (0, _babelGenerator2.default)(b()).code;
+};
+
+var specInitilize = function specInitilize(actionNames) {
+  var generateCode = [];
+  var names = getNames(actionNames);
+
+  generateCode.push(specImportBuilder(names));
+
+  var methods = ["actions", "mutations", "getters"];
+  methods.forEach(function (method) {
+    generateCode.push(generateSpecCode(method, names));
+  });
+  return generateCode;
+};
+
+var generateSpecCode = function generateSpecCode(method, names) {
+  var beforeCode = '\n    describe(' + method + ', () => {\n    ';
+  var afterCode = '\n    })\n    ';
+  var codes = [];
+  if (method !== "getters") {
+    names.forEach(function (v) {
+      codes.push('\n        it(\'' + v + '\', () => {\n        })\n        ');
+    });
+  }
+
+  var buildCode = beforeCode + codes.join('') + afterCode;
+  var b = builder(buildCode);
+  return (0, _babelGenerator2.default)(b()).code;
+};
+
+var getNames = function getNames(actionNames) {
+  var names = [];
+  actionNames.forEach(function (action, idx) {
+    names.push(actionNames[idx].imported.name);
+  });
+  return names;
 };
 
 var mutationsInitilize = function mutationsInitilize(actionsCount) {
@@ -130,6 +185,12 @@ exports.default = function () {
 
           // "mutation-types.js"に書き込み
           (0, _fs.writeFileSync)(filepath, mutationTypesCode.join("\n"));
+
+          // 書き込み先のファイル名("test/index.spec.js")
+          var specPath = (0, _path.join)(__dirname, storeSpecDir, "index.spec.js");
+
+          // テスト生成
+          (0, _fs.writeFileSync)(specPath, specInitilize(path.node.specifiers).join('\n'));
         }
       },
 
