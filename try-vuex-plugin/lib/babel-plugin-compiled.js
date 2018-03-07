@@ -73,7 +73,32 @@ var actionsInitilize = function actionsInitilize(actionsCount) {
   return b();
 };
 
+var storeImportBuilder = function storeImportBuilder() {
+  var code = '\n    import store from \'../src/store/index\'\n  ';
+  var b = builder(code);
+  return (0, _babelGenerator2.default)(b()).code;
+};
+
+var storeDispatchBuilder = function storeDispatchBuilder() {
+  var code = '\n    const dispatch = store.dispatch\n  ';
+  var b = builder(code);
+  return (0, _babelGenerator2.default)(b()).code;
+};
+
+var storeCommitBuilder = function storeCommitBuilder() {
+  var code = '\n    const commit = store.commit\n  ';
+  var b = builder(code);
+  return (0, _babelGenerator2.default)(b()).code;
+};
+
+var storeGettersBuilder = function storeGettersBuilder() {
+  var code = '\n    const getters = store.getters\n  ';
+  var b = builder(code);
+  return (0, _babelGenerator2.default)(b()).code;
+};
+
 var specImportBuilder = function specImportBuilder(actionNames) {
+
   var codes = [];
   var beforeCode = "import {";
   var afterCode = "} from '../src/store/mutation-types'";
@@ -93,7 +118,11 @@ var specInitilize = function specInitilize(actionNames) {
   var generateCode = [];
   var names = getNames(actionNames);
 
+  generateCode.push(storeImportBuilder());
   generateCode.push(specImportBuilder(names));
+  generateCode.push(storeDispatchBuilder());
+  generateCode.push(storeCommitBuilder());
+  generateCode.push(storeGettersBuilder());
 
   var methods = ["actions", "mutations", "getters"];
   methods.forEach(function (method) {

@@ -72,7 +72,40 @@ const actionsInitilize = (actionsCount) => {
   return b()
 }
 
+const storeImportBuilder = () => {
+  const code = `
+    import store from '../src/store/index'
+  `
+  const b = builder(code)
+  return generate(b()).code
+}
+
+const storeDispatchBuilder = () => {
+  const code = `
+    const dispatch = store.dispatch
+  `
+  const b = builder(code)
+  return generate(b()).code
+}
+
+const storeCommitBuilder = () => {
+  const code = `
+    const commit = store.commit
+  `
+  const b = builder(code)
+  return generate(b()).code
+}
+
+const storeGettersBuilder = () => {
+  const code = `
+    const getters = store.getters
+  `
+  const b = builder(code)
+  return generate(b()).code
+}
+
 const specImportBuilder = (actionNames) => {
+
   let codes = []
   const beforeCode = "import {"
   const afterCode = "} from '../src/store/mutation-types'"
@@ -94,7 +127,11 @@ const specInitilize = (actionNames) => {
   let generateCode = []
   const names = getNames(actionNames)
 
+  generateCode.push(storeImportBuilder())
   generateCode.push(specImportBuilder(names))
+  generateCode.push(storeDispatchBuilder())
+  generateCode.push(storeCommitBuilder())
+  generateCode.push(storeGettersBuilder())
 
   const methods = ["actions", "mutations", "getters"]
   methods.forEach((method) => {
