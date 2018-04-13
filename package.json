@@ -4,12 +4,18 @@
   "private": true,
   "scripts": {
     "s2s": "s2s",
-    "build": "babel try-vuex-plugin/src/babel-plugin.js --out-file try-vuex-plugin/lib/babel-plugin-compiled.js"
+    "build": "babel try-vuex-plugin/src/babel-plugin.js --out-file try-vuex-plugin/lib/babel-plugin-compiled.js",
+    "fmt": "prettier --write try-vuex-plugin/src/*.js"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "semi": false
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-preset-env": "^1.6.1",
+    "prettier": "1.12.0",
     "s2s": "^0.15.0"
   }
 }

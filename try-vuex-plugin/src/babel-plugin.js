@@ -8,14 +8,14 @@ import { join } from 'path'
 let importNameList = []
 
 // 対象ディレクトリ
-const storeDir = join("..", "..", "src", "store")
+const storeDir = join('..', '..', 'src', 'store')
 
 // 対象テストディレクトリ
-const storeSpecDir = join("..", "..", "test")
+const storeSpecDir = join('..', '..', 'test')
 
 // 生成用テンプレート
-const builder = (code) => {
-  return template(code, { sourceType: 'module' });
+const builder = code => {
+  return template(code, { sourceType: 'module' })
 }
 
 const newVuexBuilder = () => {
@@ -30,8 +30,7 @@ const newVuexBuilder = () => {
   return b()
 }
 
-
-const mutationTypesBuilder = (codeObj) => {
+const mutationTypesBuilder = codeObj => {
   const b = builder(`export const ACTION_NAME = ACTION_STR`)
   return b(codeObj)
 }
@@ -51,22 +50,20 @@ const gettersInitilize = () => {
   return b()
 }
 
-const actionsInitilize = (actionsCount) => {
+const actionsInitilize = actionsCount => {
   let codes = []
   const method = `
       [ACTION_NAME] ({ commit }, state) {
         commit(ACTION_NAME, state)
       }
   `
-  const beforeCode = "const actions = {"
-  const afterCode = "}"
+  const beforeCode = 'const actions = {'
+  const afterCode = '}'
 
-  for(let i = 0; i < actionsCount; i++) {
+  for (let i = 0; i < actionsCount; i++) {
     codes.push(method)
   }
-  const buildCode = beforeCode
-                  + codes.join(',')
-                  + afterCode
+  const buildCode = beforeCode + codes.join(',') + afterCode
 
   const b = builder(buildCode)
   return b()
@@ -104,26 +101,23 @@ const storeGettersBuilder = () => {
   return generate(b()).code
 }
 
-const specImportBuilder = (actionNames) => {
-
+const specImportBuilder = actionNames => {
   let codes = []
-  const beforeCode = "import {"
+  const beforeCode = 'import {'
   const afterCode = "} from '../src/store/mutation-types'"
 
   actionNames.forEach(v => {
     codes.push(v)
   })
 
-  const buildCode = beforeCode
-                  + codes.join(',')
-                  + afterCode
+  const buildCode = beforeCode + codes.join(',') + afterCode
 
   const b = builder(buildCode)
 
   return generate(b()).code
 }
 
-const specInitilize = (actionNames) => {
+const specInitilize = actionNames => {
   let generateCode = []
   const names = getNames(actionNames)
 
@@ -133,8 +127,8 @@ const specInitilize = (actionNames) => {
   generateCode.push(storeCommitBuilder())
   generateCode.push(storeGettersBuilder())
 
-  const methods = ["actions", "mutations", "getters"]
-  methods.forEach((method) => {
+  const methods = ['actions', 'mutations', 'getters']
+  methods.forEach(method => {
     generateCode.push(generateSpecCode(method, names))
   })
   return generateCode
@@ -148,19 +142,16 @@ const generateSpecCode = (method, names) => {
     })
     `
   let codes = []
-  if (method !== "getters") {
+  if (method !== 'getters') {
     names.forEach(v => {
       codes.push(`
         it('${v}', () => {
         })
-        `
-        )
+        `)
     })
   }
 
-  const buildCode = beforeCode
-                  + codes.join('')
-                  + afterCode
+  const buildCode = beforeCode + codes.join('') + afterCode
   const b = builder(buildCode)
   return generate(b()).code
 }
@@ -172,24 +163,21 @@ const getNames = actionNames => {
   })
   return names
 }
-    
 
-const mutationsInitilize = (actionsCount) => {
+const mutationsInitilize = actionsCount => {
   let codes = []
   const method = `
       [ACTION_NAME] (state) {
         state = state
       }
   `
-  const beforeCode = "const mutations = {"
-  const afterCode = "}"
+  const beforeCode = 'const mutations = {'
+  const afterCode = '}'
 
-  for(let i = 0; i < actionsCount; i++) {
+  for (let i = 0; i < actionsCount; i++) {
     codes.push(method)
   }
-  const buildCode = beforeCode
-                  + codes.join(',')
-                  + afterCode
+  const buildCode = beforeCode + codes.join(',') + afterCode
 
   const b = builder(buildCode)
   return b()
@@ -205,15 +193,19 @@ export default () => {
         //  path.container.length = 1
         // }
 
-        if(path.container.length !== 6) {
+        if (path.container.length !== 6) {
           // action定義数
-          const actionsCount = path.node.specifiers.length;
+          const actionsCount = path.node.specifiers.length
 
           // 書き込み先のファイル名("src/store/mutation-types.js")を取得
-          const filepath = join(__dirname, storeDir, (path.node.source.value + ".js"))
+          const filepath = join(
+            __dirname,
+            storeDir,
+            path.node.source.value + '.js'
+          )
 
           // mutationTypes内のコードを保持
-          const mutationTypesCode = [];
+          const mutationTypesCode = []
 
           // new Vuexの生成
           path.insertAfter(newVuexBuilder())
@@ -227,41 +219,45 @@ export default () => {
           // importリストを初期化
           importNameList.length = 0
 
-          path.node.specifiers.forEach((n) => {
+          path.node.specifiers.forEach(n => {
             importNameList.push(n.imported.name)
             const buildAst = mutationTypesBuilder({
               ACTION_NAME: t.identifier(n.imported.name),
               ACTION_STR: t.StringLiteral(n.imported.name)
-            });
+            })
 
             // mutationTypes.js用のコードを追加していく
             mutationTypesCode.push(generate(buildAst).code)
           })
 
           // "mutation-types.js"に書き込み
-          writeFileSync(filepath, mutationTypesCode.join("\n"))
+          writeFileSync(filepath, mutationTypesCode.join('\n'))
 
           // 書き込み先のファイル名("test/index.spec.js")
-          const specPath = join(__dirname, storeSpecDir, "index.spec.js")
+          const specPath = join(__dirname, storeSpecDir, 'index.spec.js')
 
           // テスト生成
-          writeFileSync(specPath, specInitilize(path.node.specifiers).join('\n'))
+          writeFileSync(
+            specPath,
+            specInitilize(path.node.specifiers).join('\n')
+          )
         }
       },
 
       // 書き出したactions, mutationsの内容を、定義したactionに書き換えていく
       VariableDeclaration: path => {
-        path.node.declarations.forEach((n1) => {
-          if(n1.id.name === 'actions') {
-            path.node.declarations.forEach((d) => {
+        path.node.declarations.forEach(n1 => {
+          if (n1.id.name === 'actions') {
+            path.node.declarations.forEach(d => {
               d.init.properties.forEach((n, i) => {
                 d.init.properties[i].key.name = importNameList[i]
-                d.init.properties[i].body.body[0].expression.arguments[0].name = importNameList[i]
+                d.init.properties[i].body.body[0].expression.arguments[0].name =
+                  importNameList[i]
               })
             })
           }
-          if(n1.id.name === 'mutations') {
-            path.node.declarations.forEach((d) => {
+          if (n1.id.name === 'mutations') {
+            path.node.declarations.forEach(d => {
               d.init.properties.forEach((n, i) => {
                 d.init.properties[i].key.name = importNameList[i]
               })
