@@ -185,6 +185,7 @@ const mutationsInitilize = actionsCount => {
 
 export default () => {
   return {
+    name:' try-s2s-vuex-201801',
     visitor: {
       ImportDeclaration: path => {
         // TODO: 制御について改善が必要
