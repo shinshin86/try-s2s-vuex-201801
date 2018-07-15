@@ -1,6 +1,10 @@
 # try-s2s-vuex-201801
 try [s2s](https://github.com/akameco/s2s) at vuex in 2018/01
 
+[![Build Status](https://travis-ci.org/shinshin86/try-s2s-vuex-201801.svg?branch=master)](https://travis-ci.org/shinshin86/try-s2s-vuex-201801)
+
+
+
 # What is this?
 
 ![gif sample](https://github.com/shinshin86/try-s2s-vuex-201801/blob/master/gif/s2s_vuex_sample.gif?raw=true)
