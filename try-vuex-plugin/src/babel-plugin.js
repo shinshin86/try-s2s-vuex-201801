@@ -18,6 +18,7 @@ const builder = code => {
   return template(code, { sourceType: 'module' })
 }
 
+/* newVuexBuilder */
 const newVuexBuilder = () => {
   const b = builder(`
   export default new Vuex.Store({
@@ -30,11 +31,13 @@ const newVuexBuilder = () => {
   return b()
 }
 
+/* mutationTypesBuilder */
 const mutationTypesBuilder = codeObj => {
   const b = builder(`export const ACTION_NAME = ACTION_STR`)
   return b(codeObj)
 }
 
+/* stateInitilize */
 const stateInitilize = () => {
   const b = builder(`
     const state = {
@@ -43,6 +46,7 @@ const stateInitilize = () => {
   return b()
 }
 
+/* gettersInitilize */
 const gettersInitilize = () => {
   const b = builder(`
     const getters = {
@@ -50,6 +54,7 @@ const gettersInitilize = () => {
   return b()
 }
 
+/* actionsInitilize */
 const actionsInitilize = actionsCount => {
   let codes = []
   const method = `
@@ -69,6 +74,7 @@ const actionsInitilize = actionsCount => {
   return b()
 }
 
+/* storeImportBuilder */
 const storeImportBuilder = () => {
   const code = `
     import store from '../src/store/index'
@@ -77,6 +83,7 @@ const storeImportBuilder = () => {
   return generate(b()).code
 }
 
+/* storeDispatchBuilder */
 const storeDispatchBuilder = () => {
   const code = `
     const dispatch = store.dispatch
@@ -85,6 +92,7 @@ const storeDispatchBuilder = () => {
   return generate(b()).code
 }
 
+/* storeCommitBuilder */
 const storeCommitBuilder = () => {
   const code = `
     const commit = store.commit
@@ -93,6 +101,7 @@ const storeCommitBuilder = () => {
   return generate(b()).code
 }
 
+/* storeGettersBuilder */
 const storeGettersBuilder = () => {
   const code = `
     const getters = store.getters
@@ -101,6 +110,7 @@ const storeGettersBuilder = () => {
   return generate(b()).code
 }
 
+/* specImportBuilder */
 const specImportBuilder = actionNames => {
   let codes = []
   const beforeCode = 'import {'
@@ -117,6 +127,7 @@ const specImportBuilder = actionNames => {
   return generate(b()).code
 }
 
+/* specInitilize */
 const specInitilize = actionNames => {
   let generateCode = []
   const names = getNames(actionNames)
@@ -164,6 +175,7 @@ const getNames = actionNames => {
   return names
 }
 
+/* mutationsInitilize */
 const mutationsInitilize = actionsCount => {
   let codes = []
   const method = `
