@@ -47,3 +47,15 @@ Build "try-vuex-plugin" at this command.
 yarn run build
 ```
 
+
+
+## Development
+
+```bash
+# test(snapshot test, using jest)
+yarn run test
+
+# code format (using prettier)
+yarn run fmt
+```
+
