@@ -12,6 +12,10 @@
     "singleQuote": true,
     "semi": false
   },
+  "jest": {
+    "verbose": true,
+    "testURL": "http://localhost/"
+  },
   "devDependencies": {
     "@babel/cli": "^7.0.0",
     "@babel/core": "^7.0.0",
