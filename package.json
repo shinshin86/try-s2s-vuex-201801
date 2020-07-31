@@ -16,6 +16,9 @@
     "verbose": true,
     "testURL": "http://localhost/"
   },
+  "engines": {
+    "node" : ">= 10.14.2"
+  },
   "devDependencies": {
     "@babel/cli": "^7.0.0",
     "@babel/core": "^7.0.0",
